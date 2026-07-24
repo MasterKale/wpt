@@ -1,4 +1,4 @@
-from tests.support.classic.asserts import assert_success
+from tests.support.classic.asserts import assert_success, assert_error
 
 from .. import create_credential
 from . import add_credential
@@ -37,6 +37,8 @@ def test_add_credential_with_large_blob(session, authenticator):
     credential = create_credential(
         credential_id="bGFyZ2VibG9i",
         large_blob="c29tZSBibG9i",
+        is_resident_credential=True,
+        user_handle="wpt-user"
     )
 
     response = add_credential(session, authenticator, credential)
@@ -48,6 +50,23 @@ def test_add_credential_with_large_blob(session, authenticator):
     assert credentials[0]["largeBlob"] == "c29tZSBibG9i"
 
 
+def test_add_credential_with_large_blob_require_discoverable_credential(session, authenticator):
+    """
+    Note: Roaming authenticators that use [FIDO-CTAP] as their cross-platform transport protocol
+    support this Large Blob extension for discoverable credentials, and might return an error
+    unless authenticatorSelection.residentKey is set to preferred or required...
+
+    https://w3c.github.io/webauthn/#sctn-large-blob-extension:~:text=NOTE%3A%20Roaming,discoverable%20credentials.
+    """
+    credential = create_credential(
+        credential_id="bGFyZ2VibG9i",
+        large_blob="c29tZSBibG9i",
+        is_resident_credential=False,
+    )
+
+    response = add_credential(session, authenticator, credential)
+    assert_error(response, "invalid argument")
+    
 def test_add_credential_with_sign_count(session, authenticator):
     credential = create_credential(credential_id="c2lnbmNvdW50", sign_count=42)
 
