@@ -144,7 +144,7 @@ function parseAuthenticatorData(authenticatorData) {
       at: !!(flags & 0x40),
       ed: !!(flags & 0x80),
     },
-    counter: (counter[0] << 24)
+    signCount: (counter[0] << 24)
            + (counter[1] << 16)
            + (counter[2] << 8)
            + counter[3],

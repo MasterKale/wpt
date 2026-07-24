@@ -117,6 +117,55 @@ promise_test(async t => {
 }, "Get an assertion");
 
 promise_test(async t => {
+  /**
+   * Test support for `signCount: null` in the Add Credential API, which is being added in
+   * https://github.com/w3c/webauthn/pull/2382
+   */
+  
+   // Create a virtual authenticator
+  const _authenticator = await window.test_driver.add_virtual_authenticator({
+    protocol: "ctap2_1",
+    transport: "usb",
+  });
+
+  // Invoke Add Credential w/`signCount: null`
+  const private_key =
+      "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
+    + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
+    + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
+  await window.test_driver.add_credential(_authenticator, {
+      credentialId: btoa("cred-1"),
+      rpId: window.location.hostname,
+      privateKey: private_key,
+      signCount: null,
+      isResidentCredential: true,
+  });
+
+  // Auth with the credential
+  let assertion = await navigator.credentials.get({
+    publicKey: {
+      challenge: new TextEncoder().encode(CHALLENGE),
+      rpId: window.location.hostname,
+      allowCredentials: [{
+        type: "public-key",
+        id: new Uint8Array([..."cred-1"].map(c => c.charCodeAt(0))),
+        transports: ["usb"],
+      }],
+      userVerification: "discouraged",
+    },
+  });
+
+  let binaryAuthenticatorData = new Uint8Array(assertion.response.authenticatorData);
+  let authenticatorData = parseAuthenticatorData(binaryAuthenticatorData);
+
+  // Make sure that signCount did not increment
+  assert_equals(authenticatorData.signCount, 0);
+
+  // Cleanup
+  await window.test_driver.remove_virtual_authenticator(_authenticator);
+}, "Test that null signCount in Add Credential yields constant 0 signCount on assertion");
+
+promise_test(async t => {
   await window.test_driver.remove_virtual_authenticator(authenticator);
 }, "Clean up the test environment");
 
