@@ -94,3 +94,17 @@ def test_add_multiple_credentials(session, authenticator):
 
     returned_ids = {c["credentialId"] for c in credentials}
     assert returned_ids == set(credential_ids)
+
+def test_add_credential_sign_count_null(session, authenticator) -> None:
+    """
+    Adding support for this in https://github.com/w3c/webauthn/pull/2382
+    """
+    new_credential = create_credential()
+    new_credential["signCount"] = None
+
+    response = add_credential(session, authenticator, new_credential)
+    assert_success(response)
+
+    credentials = session.web_authn.get_credentials(authenticator)
+    assert len(credentials) == 1
+    assert credentials[0]["signCount"] == 0
