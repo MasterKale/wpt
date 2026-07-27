@@ -274,6 +274,21 @@ class AddCredentialAction:
         self.logger.debug("Adding credential to virtual authenticator %s " % authenticator_id)
         return self.protocol.virtual_authenticator.add_credential(authenticator_id, credential)
 
+
+class SetCredentialPropertiesAction:
+    name = "set_credential_properties"
+
+    def __init__(self, logger, protocol):
+        self.logger = logger
+        self.protocol = protocol
+
+    def __call__(self, payload):
+        authenticator_id = payload["authenticator_id"]
+        credential_id = payload["credential_id"]
+        props = payload["props"]
+        self.logger.debug(f"Updating properties for credential \"{credential_id}\"")
+        return self.protocol.virtual_authenticator.set_credential_properties(authenticator_id, credential_id, props)
+
 class GetCredentialsAction:
     name = "get_credentials"
 
@@ -639,6 +654,7 @@ actions = [ClickAction,
            AddVirtualAuthenticatorAction,
            RemoveVirtualAuthenticatorAction,
            AddCredentialAction,
+           SetCredentialPropertiesAction,
            GetCredentialsAction,
            RemoveCredentialAction,
            RemoveAllCredentialsAction,

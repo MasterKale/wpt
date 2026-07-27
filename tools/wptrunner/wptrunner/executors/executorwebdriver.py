@@ -871,6 +871,13 @@ class WebDriverVirtualAuthenticatorProtocolPart(VirtualAuthenticatorProtocolPart
     def add_credential(self, authenticator_id, credential):
         return self.webdriver.send_session_command("POST", "webauthn/authenticator/%s/credential" % authenticator_id, credential)
 
+    def set_credential_properties(self, authenticator_id: str, credential_id: str, props: dict):
+        return self.webdriver.send_session_command(
+            "POST",
+            f"webauthn/authenticator/{authenticator_id}/credentials/{credential_id}/props",
+            props,
+        )
+
     def get_credentials(self, authenticator_id):
         return self.webdriver.send_session_command("GET", "webauthn/authenticator/%s/credentials" % authenticator_id)
 
