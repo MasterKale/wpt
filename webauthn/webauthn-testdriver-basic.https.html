@@ -121,11 +121,14 @@ promise_test(async t => {
    * Test support for `signCount: null` in the Add Credential API, which is being added in
    * https://github.com/w3c/webauthn/pull/2382
    */
+  const credentialId = "Y3JlZC0w";
   
-   // Create a virtual authenticator
+  // Create a virtual authenticator
   const _authenticator = await window.test_driver.add_virtual_authenticator({
     protocol: "ctap2_1",
-    transport: "usb",
+    transport: "internal",
+    hasResidentKey: true,
+    hasUserVerification: true,
   });
 
   // Invoke Add Credential w/`signCount: null`
@@ -134,7 +137,7 @@ promise_test(async t => {
     + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
     + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
   await window.test_driver.add_credential(_authenticator, {
-      credentialId: btoa("cred-1"),
+      credentialId,
       rpId: window.location.hostname,
       privateKey: private_key,
       signCount: null,
@@ -148,8 +151,8 @@ promise_test(async t => {
       rpId: window.location.hostname,
       allowCredentials: [{
         type: "public-key",
-        id: new Uint8Array([..."cred-1"].map(c => c.charCodeAt(0))),
-        transports: ["usb"],
+        id: new Uint8Array([...base64urlDecode(credentialId)].map(c => c.charCodeAt(0))),
+        transports: ["internal"],
       }],
       userVerification: "discouraged",
     },
