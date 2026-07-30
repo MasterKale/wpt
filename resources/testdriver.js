@@ -1646,6 +1646,30 @@
         },
 
         /**
+         * Updates an existing WebAuthn virtual authenticator credential 
+         * 
+         * Matches the `Set Credential Properties
+         * <https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties>`_
+         * WebDriver command.
+         * 
+         * @param {String} authenticator_id - the ID of the authenticator
+         * @param {String} credential_id - The base64url-encoded credential ID to update
+         * @param {Object} props - A `Set Credential Properties Parameters
+         *                         <https://w3c.github.io/webauthn/#set-credential-properties-parameters>`
+         *                         object 
+         * @param {WindowProxy} context - Browsing context in which
+         *                                to run the call, or null for the current
+         *                                browsing context.
+         *
+         * @returns {Promise} fulfilled after the credential is updated, or
+         *                    rejected in the cases the WebDriver command
+         *                    errors
+         */
+        set_credential_properties: function(authenticator_id, credential_id, props, context=null) {
+            return window.test_driver_internal.set_credential_properties(authenticator_id, credential_id, props, context);
+        },
+
+        /**
          * Gets all the credentials stored in an authenticator
          *
          * This function retrieves all the credentials (added via the U2F API,

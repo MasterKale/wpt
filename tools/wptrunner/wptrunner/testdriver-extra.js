@@ -599,6 +599,10 @@
         return create_context_action("add_credential", context, {authenticator_id, credential});
     };
 
+    window.test_driver_internal.set_credential_properties = function(authenticator_id, credential_id, props, context=null) {
+        return create_context_action("set_credential_properties", context, {authenticator_id, credential_id, props});
+    }
+
     window.test_driver_internal.get_credentials = function(authenticator_id, context=null) {
         return create_context_action("get_credentials", context, {authenticator_id});
     };

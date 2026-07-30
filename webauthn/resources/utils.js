@@ -127,6 +127,7 @@ function parseAuthenticatorData(authenticatorData) {
   assert_greater_than_equal(authenticatorData.length, 37);
   let flags = authenticatorData[32];
   let counter = authenticatorData.slice(33, 37);
+  const counterDataView = new DataView(counter.buffer, counter.byteOffset, counter.length);
 
   let attestedCredentialData = authenticatorData.length > 37 ?
         parseAttestedCredentialData(authenticatorData.slice(37)) : null;
@@ -144,10 +145,7 @@ function parseAuthenticatorData(authenticatorData) {
       at: !!(flags & 0x40),
       ed: !!(flags & 0x80),
     },
-    counter: (counter[0] << 24)
-           + (counter[1] << 16)
-           + (counter[2] << 8)
-           + counter[3],
+    signCount: counterDataView.getUint32(0, false),
     attestedCredentialData,
     extensions,
   };
