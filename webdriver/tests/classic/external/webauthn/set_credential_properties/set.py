@@ -1,6 +1,6 @@
 from typing import Any
 
-from . import set_credential_properties, SetCredentialPropertiesProps, asdict
+from . import set_credential_properties, SetCredentialPropertiesProps
 from .. import create_credential
 
 
@@ -51,12 +51,12 @@ def test_set_credential_properties_omit_sign_count(session: Any, authenticator: 
     assert new_credential["signCount"] == 1
 
     # Update the credential, omitting `signCount`
-    _props = SetCredentialPropertiesProps(
+    props = SetCredentialPropertiesProps(
         backupEligibility=True,
         backupState=True,
     )
 
-    set_credential_properties(session, authenticator, credential_id, _props)
+    set_credential_properties(session, authenticator, credential_id, props)
 
     # Assert the existing credential's `signCount` is unchanged
     [updated_credential] = session.web_authn.get_credentials(authenticator)
