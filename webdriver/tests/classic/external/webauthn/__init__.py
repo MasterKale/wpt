@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+from typing import Literal
+
+
 # Base64url-encoded PKCS#8 EC P-256 private key
 PRIVATE_KEY = (
     "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
@@ -27,3 +31,28 @@ def create_credential(
     if large_blob is not None:
         credential["largeBlob"] = large_blob
     return credential
+
+
+@dataclass
+class DataclassOmittableFields:
+    """
+    This dataclass allows for partial initialization of fields. Pass
+    `DataclassOmittableFields.dict_factory` into `dataclasses.asdict` as the `dict_factory` kwarg
+    to omit fields not explicitly defined:
+
+    Example:
+    ```
+    @dataclass
+    class SetCredentialPropertiesProps:
+        
+    props = SetCredentialPropertiesProps(backupEligibility=True)
+
+    props_dict = asdict(props, dict_factory=SetCredentialPropertiesProps.dict_factory)
+    print(props_dict)  # {'backupEligibility': True}
+    ```
+    """
+    UNSET = Literal["UNSET"]
+
+    @staticmethod
+    def dict_factory(items):
+        return { k: v for (k, v) in items if v is not DataclassOmittableFields.UNSET }
