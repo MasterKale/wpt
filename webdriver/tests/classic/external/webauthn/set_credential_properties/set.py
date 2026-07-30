@@ -54,10 +54,7 @@ def test_set_credential_properties_omit_sign_count(session: Any, authenticator: 
     _props = SetCredentialPropertiesProps(
         backupEligibility=True,
         backupState=True,
-        signCount=None,
     )
-    _props = asdict(_props)
-    del _props["signCount"]
 
     set_credential_properties(session, authenticator, credential_id, _props)
 

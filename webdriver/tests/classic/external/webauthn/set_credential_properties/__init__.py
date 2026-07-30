@@ -1,19 +1,40 @@
 from dataclasses import dataclass, asdict
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Literal
+
+
 
 
 @dataclass
 class SetCredentialPropertiesProps:
-    backupEligibility: Optional[bool]
-    backupState: Optional[bool]
-    signCount: Optional[int]
+    """
+    This dataclass allows for partial initialization of values. Values not explicitly specified
+    can be omitted by passing `SetCredentialPropertiesProps.dict_factory` in as the `dict_factory`
+    kwarg when passing an instance of this dataclass into `dataclasses.asdict`:
+
+    Example:
+    ```
+    props = SetCredentialPropertiesProps(backupEligibility=True)
+
+    props_dict = asdict(props, dict_factory=SetCredentialPropertiesProps.dict_factory)
+    print(props_dict)  # {'backupEligibility': True}
+    ```
+    """
+    _UNSET = Literal["UNSET"]
+
+    backupEligibility: Union[bool, _UNSET] = _UNSET
+    backupState: Union[bool, _UNSET] = _UNSET
+    signCount: Union[int, None, _UNSET] = _UNSET
+
+    @staticmethod
+    def dict_factory(items):
+        return { k: v for (k, v) in items if v is not SetCredentialPropertiesProps._UNSET }
 
 
 def set_credential_properties(
     session: Any,
     authenticator_id: str,
     credential_id: str,
-    props: Union[SetCredentialPropertiesProps, dict],
+    props: SetCredentialPropertiesProps,
 ):
     """
     This method calls the Set Credential Properties endpoint as per the WebAuthn spec:
@@ -36,8 +57,7 @@ def set_credential_properties(
     set_credential_properties(..., props=props)
     ```
     """
-    if isinstance(props, SetCredentialPropertiesProps):
-        props = asdict(props)
+    props = asdict(props, dict_factory=SetCredentialPropertiesProps.dict_factory)
 
     return session.transport.send(
         "POST",
