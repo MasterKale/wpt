@@ -88,4 +88,4 @@ def test_add_credential_sign_count_null(session, authenticator) -> None:
 
     credentials = session.web_authn.get_credentials(authenticator)
     assert len(credentials) == 1
-    assert credentials[0]["signCount"] == 0
+    assert credentials[0]["signCount"] == None
