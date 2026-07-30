@@ -133,14 +133,14 @@ promise_test(async t => {
   const credentialId = "Y3JlZC0w";
   
   // Invoke Add Credential w/`signCount: null`
-  const private_key =
+  const privateKey =
       "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
     + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
     + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
   await window.test_driver.add_credential(passkeyPlatformAuthenticator, {
       credentialId,
       rpId: window.location.hostname,
-      privateKey: private_key,
+      privateKey,
       signCount: null,
       isResidentCredential: true,
   });
@@ -173,14 +173,14 @@ promise_test(async t => {
    */
   const credentialId = "Y3JlZC0w";
 
-  const private_key =
+  const privateKey =
       "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
     + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
     + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
   const opts = {
       credentialId,
       rpId: window.location.hostname,
-      privateKey: private_key,
+      privateKey,
       signCount: 42,
       userHandle: credentialId,
       isResidentCredential: true,
